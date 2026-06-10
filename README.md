@@ -28,6 +28,19 @@ Run it inside any project. It will:
 export ANTHROPIC_API_KEY=sk-ant-...   # get one at console.anthropic.com
 ```
 
+### Alternative: Gemini (free tier)
+
+Pass a `gemini-*` model id and the CLI switches provider, reading
+`GEMINI_API_KEY` instead (free keys at [aistudio.google.com](https://aistudio.google.com)):
+
+```sh
+export GEMINI_API_KEY=...
+npx architecture-cli --model gemini-2.5-flash
+```
+
+⚠️ On the Google free tier your prompts may be used to improve their
+products — fine for experiments, avoid confidential codebases.
+
 ## Usage
 
 ```

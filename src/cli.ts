@@ -1,13 +1,8 @@
 import path from "node:path";
 import { Command } from "commander";
 import pc from "picocolors";
-import {
-  AnthropicAnalyzer,
-  ApiError,
-  ConfigError,
-  DEFAULT_MODEL,
-  assertApiKey,
-} from "./llm/client.js";
+import { ApiError, ConfigError, DEFAULT_MODEL } from "./llm/client.js";
+import { assertApiKeyForModel, createAnalyzer } from "./llm/factory.js";
 import {
   ScanEmptyError,
   buildPayloadOnly,
@@ -38,7 +33,7 @@ program
   )
   .option(
     "--model <id>",
-    "Anthropic model id",
+    "model id — Anthropic (default) or Gemini with a gemini-* id (uses GEMINI_API_KEY)",
     process.env["ARCHITECTURE_CLI_MODEL"] ?? DEFAULT_MODEL,
   )
   .option("--refresh", "ignore cache and re-run the LLM analysis", false)
@@ -69,7 +64,7 @@ program
       }
 
       // Fail fast before scanning if the key is missing.
-      assertApiKey();
+      assertApiKeyForModel(opts.model);
 
       const outputDir = path.resolve(rootDir, opts.output);
       const started = Date.now();
@@ -81,7 +76,7 @@ program
         model: opts.model,
         cliVersion: VERSION,
         refresh: Boolean(opts.refresh),
-        analyzer: new AnthropicAnalyzer(opts.model),
+        analyzer: createAnalyzer(opts.model),
         log: (msg) => console.log(msg),
       });
 

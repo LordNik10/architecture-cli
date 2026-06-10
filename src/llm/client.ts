@@ -23,6 +23,10 @@ export function assertApiKey(): void {
   }
 }
 
+export function isGeminiModel(model: string): boolean {
+  return model.toLowerCase().startsWith("gemini");
+}
+
 export class AnthropicAnalyzer implements ArchitectureAnalyzer {
   constructor(private readonly model: string = DEFAULT_MODEL) {}
 
