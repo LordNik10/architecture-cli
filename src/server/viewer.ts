@@ -65,7 +65,12 @@ export function startViewer(scene: ExcalidrawScene): Promise<{ url: string; clos
       }
       resolve({
         url: `http://127.0.0.1:${address.port}`,
-        close: () => server.close(),
+        close: () => {
+          // closeAllConnections() drops the browser's keep-alive sockets so the
+          // server actually stops; without it server.close() waits for them.
+          server.closeAllConnections?.();
+          server.close();
+        },
       });
     });
   });

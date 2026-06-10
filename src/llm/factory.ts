@@ -1,20 +1,33 @@
 import {
   AnthropicAnalyzer,
   assertApiKey,
-  isGeminiModel,
+  providerForModel,
   type ArchitectureAnalyzer,
 } from "./client.js";
 import { GeminiAnalyzer, assertGeminiApiKey } from "./gemini.js";
+import { OpenAIAnalyzer, assertOpenAIApiKey } from "./openai.js";
 
-/** Provider is inferred from the model id: gemini-* → Gemini, else Anthropic. */
+/** Provider is inferred from the model id (see providerForModel). */
 export function createAnalyzer(model: string): ArchitectureAnalyzer {
-  return isGeminiModel(model) ? new GeminiAnalyzer(model) : new AnthropicAnalyzer(model);
+  switch (providerForModel(model)) {
+    case "gemini":
+      return new GeminiAnalyzer(model);
+    case "openai":
+      return new OpenAIAnalyzer(model);
+    default:
+      return new AnthropicAnalyzer(model);
+  }
 }
 
 export function assertApiKeyForModel(model: string): void {
-  if (isGeminiModel(model)) {
-    assertGeminiApiKey();
-  } else {
-    assertApiKey();
+  switch (providerForModel(model)) {
+    case "gemini":
+      assertGeminiApiKey();
+      break;
+    case "openai":
+      assertOpenAIApiKey();
+      break;
+    default:
+      assertApiKey();
   }
 }

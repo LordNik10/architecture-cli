@@ -23,8 +23,28 @@ export function assertApiKey(): void {
   }
 }
 
+export type Provider = "anthropic" | "gemini" | "openai";
+
 export function isGeminiModel(model: string): boolean {
   return model.toLowerCase().startsWith("gemini");
+}
+
+export function isOpenAIModel(model: string): boolean {
+  const m = model.toLowerCase();
+  return (
+    m.startsWith("gpt") ||
+    m.startsWith("chatgpt") ||
+    m.startsWith("o1") ||
+    m.startsWith("o3") ||
+    m.startsWith("o4")
+  );
+}
+
+/** Provider is inferred from the model id: gemini → Gemini, gpt/o-series → OpenAI, else Anthropic. */
+export function providerForModel(model: string): Provider {
+  if (isGeminiModel(model)) return "gemini";
+  if (isOpenAIModel(model)) return "openai";
+  return "anthropic";
 }
 
 export class AnthropicAnalyzer implements ArchitectureAnalyzer {

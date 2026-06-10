@@ -3,6 +3,7 @@ import { Command } from "commander";
 import pc from "picocolors";
 import { ApiError, ConfigError, DEFAULT_MODEL } from "./llm/client.js";
 import { assertApiKeyForModel, createAnalyzer } from "./llm/factory.js";
+import { runInteractiveSetup } from "./llm/interactive.js";
 import {
   ScanEmptyError,
   buildPayloadOnly,
@@ -20,8 +21,9 @@ program
   .name("architecture-cli")
   .description(
     "Scan a project and generate an Excalidraw-style architecture board.\n" +
-      "Requires ANTHROPIC_API_KEY (analysis is done by Claude; only metadata and\n" +
-      "key manifest files are sent — use --show-payload to audit).",
+      "In an interactive terminal, pick the model (Claude / ChatGPT / Gemini) and enter\n" +
+      "your API key from a menu. Analysis sends only metadata and key manifest files —\n" +
+      "use --show-payload to audit. The API key stays in memory and is never persisted.",
   )
   .version(VERSION)
   .argument("[path]", "project directory to analyze", ".")
@@ -33,7 +35,8 @@ program
   )
   .option(
     "--model <id>",
-    "model id — Anthropic (default) or Gemini with a gemini-* id (uses GEMINI_API_KEY)",
+    "model id — Claude (default), or a gpt-*/o* id for OpenAI, or a gemini-* id for Gemini.\n" +
+      "Omit it in an interactive terminal to pick the model and enter the API key from a menu.",
     process.env["ARCHITECTURE_CLI_MODEL"] ?? DEFAULT_MODEL,
   )
   .option("--refresh", "ignore cache and re-run the LLM analysis", false)
@@ -63,6 +66,13 @@ program
         throw new ConfigError("--direction must be 'right' or 'down'");
       }
 
+      // In an interactive terminal, when the user didn't pin a model with --model,
+      // let them pick the provider/model and supply the key via the arrow menu.
+      const modelExplicit = program.getOptionValueSource("model") !== "default";
+      if (process.stdin.isTTY && !modelExplicit) {
+        opts.model = await runInteractiveSetup();
+      }
+
       // Fail fast before scanning if the key is missing.
       assertApiKeyForModel(opts.model);
 
@@ -90,16 +100,29 @@ program
       );
 
       if (opts.serve) {
-        const { url } = await startViewer(result.scene);
+        const { url, close } = await startViewer(result.scene);
         console.log(`Viewer: ${pc.cyan(url)} ${pc.dim("(Ctrl+C to stop)")}`);
         if (opts.open) openBrowser(url);
-        // keep the process alive while the server runs
+        // Keep the process alive while the server runs, then shut it down on
+        // Ctrl+C so the process can actually exit (the listening server and
+        // any keep-alive connections from the browser otherwise hold the
+        // event loop open forever).
         await new Promise<void>((resolve) => {
-          process.on("SIGINT", () => resolve());
-          process.on("SIGTERM", () => resolve());
+          const stop = () => {
+            close();
+            resolve();
+          };
+          process.once("SIGINT", stop);
+          process.once("SIGTERM", stop);
         });
+        console.log(pc.dim("Viewer stopped."));
       }
     } catch (err) {
+      // User pressed Ctrl+C / Esc at an interactive prompt — exit quietly.
+      if (err instanceof Error && err.name === "ExitPromptError") {
+        console.error(pc.dim("Annullato."));
+        process.exit(130);
+      }
       if (err instanceof ConfigError) {
         console.error(pc.red(`✗ ${err.message}`));
         process.exit(1);

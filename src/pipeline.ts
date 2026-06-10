@@ -65,7 +65,7 @@ export async function runPipeline(opts: PipelineOptions): Promise<PipelineResult
 
   if (!graph) {
     const payload = buildPayload(scan, read);
-    log(`Asking Claude (${opts.model}) …`);
+    log(`Asking the model (${opts.model}) …`);
     graph = await opts.analyzer.analyze(payload);
     writeCache(opts.outputDir, cacheKey, opts.model, graph);
   }
