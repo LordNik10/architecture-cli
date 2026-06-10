@@ -1,0 +1,56 @@
+{
+  "name": "architecture-cli",
+  "version": "0.1.0",
+  "description": "Scan any project and generate an Excalidraw-style architecture board",
+  "type": "module",
+  "bin": {
+    "architecture-cli": "dist/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsup && node scripts/build-viewer.mjs",
+    "build:cli": "tsup",
+    "build:viewer": "node scripts/build-viewer.mjs",
+    "dev": "tsup --watch",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "architecture",
+    "diagram",
+    "excalidraw",
+    "cli",
+    "documentation"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.104.1",
+    "commander": "^15.0.0",
+    "elkjs": "^0.11.0",
+    "fast-xml-parser": "^5.8.0",
+    "ignore": "^7.0.0",
+    "picocolors": "^1.1.0",
+    "yaml": "^2.8.0",
+    "zod": "^4.4.0"
+  },
+  "optionalDependencies": {
+    "@resvg/resvg-js": "^2.6.0"
+  },
+  "devDependencies": {
+    "@excalidraw/excalidraw": "^0.18.0",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "esbuild": "^0.25.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "tsup": "^8.5.0",
+    "typescript": "^5.9.0",
+    "vitest": "^3.2.0"
+  }
+}

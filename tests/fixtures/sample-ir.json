@@ -1,0 +1,29 @@
+{
+  "title": "Recommender Platform",
+  "summary": "A recommendation system with client applications talking to a recommender server over a web service API, backed by two databases and an offline generator server.",
+  "nodes": [
+    { "id": "client-layer", "kind": "group", "label": "Clients", "sublabel": null, "parentId": null, "description": null },
+    { "id": "client-app-1", "kind": "client", "label": "Client Application 1", "sublabel": null, "parentId": "client-layer", "description": null },
+    { "id": "client-app-2", "kind": "client", "label": "Client Application 2", "sublabel": null, "parentId": "client-layer", "description": null },
+    { "id": "recommender-server", "kind": "group", "label": "Recommender Server", "sublabel": null, "parentId": null, "description": null },
+    { "id": "web-api", "kind": "api", "label": "Web Service API", "sublabel": "REST", "parentId": "recommender-server", "description": null },
+    { "id": "online-recommender", "kind": "service", "label": "Online Recommender", "sublabel": "Spring Boot", "parentId": "recommender-server", "description": null },
+    { "id": "action-service", "kind": "service", "label": "Action Service", "sublabel": null, "parentId": "recommender-server", "description": null },
+    { "id": "db-actions", "kind": "database", "label": "DB (Actions)", "sublabel": "PostgreSQL", "parentId": "recommender-server", "description": null },
+    { "id": "db-rules", "kind": "database", "label": "DB (Rules)", "sublabel": "PostgreSQL", "parentId": "recommender-server", "description": null },
+    { "id": "generator-server", "kind": "group", "label": "Generator Server", "sublabel": null, "parentId": null, "description": null },
+    { "id": "action-generators", "kind": "service", "label": "Action-Based Generators", "sublabel": null, "parentId": "generator-server", "description": null },
+    { "id": "third-party-metadata", "kind": "external", "label": "3rd Party Metadata", "sublabel": null, "parentId": null, "description": null }
+  ],
+  "edges": [
+    { "id": "e1", "from": "client-app-1", "to": "web-api", "label": "REST", "bidirectional": true },
+    { "id": "e2", "from": "client-app-2", "to": "web-api", "label": "REST", "bidirectional": true },
+    { "id": "e3", "from": "web-api", "to": "online-recommender", "label": null, "bidirectional": false },
+    { "id": "e4", "from": "web-api", "to": "action-service", "label": null, "bidirectional": false },
+    { "id": "e5", "from": "online-recommender", "to": "db-rules", "label": "reads", "bidirectional": false },
+    { "id": "e6", "from": "action-service", "to": "db-actions", "label": "reads/writes", "bidirectional": false },
+    { "id": "e7", "from": "action-generators", "to": "db-actions", "label": "reads", "bidirectional": false },
+    { "id": "e8", "from": "action-generators", "to": "db-rules", "label": "writes", "bidirectional": false },
+    { "id": "e9", "from": "third-party-metadata", "to": "db-rules", "label": "enriches", "bidirectional": false }
+  ]
+}

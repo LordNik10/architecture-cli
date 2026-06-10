@@ -1,0 +1,7 @@
+{
+  "name": "@shop/api",
+  "dependencies": {
+    "@nestjs/core": "^11.0.0",
+    "stripe": "^17.0.0"
+  }
+}
