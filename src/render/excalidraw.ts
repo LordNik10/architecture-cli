@@ -287,7 +287,7 @@ export function renderExcalidraw(graph: PositionedGraph): ExcalidrawScene {
   return {
     type: "excalidraw",
     version: 2,
-    source: "architecture-cli",
+    source: "llm-arch-diagram",
     elements,
     appState: { viewBackgroundColor: "#ffffff", gridSize: null },
     files: {},

@@ -18,7 +18,7 @@ const VALID_FORMATS: OutputFormat[] = ["excalidraw", "svg", "png", "json"];
 const program = new Command();
 
 program
-  .name("architecture-cli")
+  .name("llm-arch-diagram")
   .description(
     "Scan a project and generate an Excalidraw-style architecture board.\n" +
       "In an interactive terminal, pick the model (Claude / ChatGPT / Gemini) and enter\n" +
@@ -27,7 +27,7 @@ program
   )
   .version(VERSION)
   .argument("[path]", "project directory to analyze", ".")
-  .option("-o, --output <dir>", "output directory", ".architecture-cli")
+  .option("-o, --output <dir>", "output directory", ".llm-arch-diagram")
   .option(
     "-f, --format <list>",
     `comma-separated outputs: ${VALID_FORMATS.join(",")}`,
@@ -37,7 +37,7 @@ program
     "--model <id>",
     "model id — Claude (default), or a gpt-*/o* id for OpenAI, or a gemini-* id for Gemini.\n" +
       "Omit it in an interactive terminal to pick the model and enter the API key from a menu.",
-    process.env["ARCHITECTURE_CLI_MODEL"] ?? DEFAULT_MODEL,
+    process.env["LLM_ARCH_DIAGRAM_MODEL"] ?? DEFAULT_MODEL,
   )
   .option("--refresh", "ignore cache and re-run the LLM analysis", false)
   .option("--no-open", "don't open the browser")

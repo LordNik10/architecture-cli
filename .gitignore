@@ -1,5 +1,6 @@
 node_modules/
 dist/
+.llm-arch-diagram/
 .architecture-cli/
 *.tgz
 .DS_Store

@@ -1,7 +1,7 @@
 {
   "type": "excalidraw",
   "version": 2,
-  "source": "architecture-cli",
+  "source": "llm-arch-diagram",
   "elements": [
     {
       "id": "n-client-layer",

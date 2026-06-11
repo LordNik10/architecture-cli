@@ -21,6 +21,7 @@ const DENYLIST = new Set([
   "__pycache__",
   ".venv",
   "venv",
+  ".llm-arch-diagram",
   ".architecture-cli",
   ".turbo",
   ".cache",
