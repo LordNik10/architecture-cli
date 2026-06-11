@@ -1,6 +1,6 @@
 {
   "name": "@lordnik10/llm-arch-diagram",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Scan any project and generate an Excalidraw-style architecture board",
   "type": "module",
   "bin": {
